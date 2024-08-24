@@ -5,7 +5,7 @@ import (
 )
 
 type memoryStore struct {
-	RateLimiter
+	Store
 	count    int64
 	duration time.Duration
 	// sync.RWMutex
@@ -38,17 +38,15 @@ func (m *memoryStore) init(limit int64, window time.Duration, stopCh *chan bool)
 	}()
 }
 
-func (m *memoryStore) getstatus() (int64, bool) {
+func (m *memoryStore) getStatus() (int64, bool) {
 	// m.RLock()
 	// defer m.RUnlock()
 	return m.count, m.count <= m.limit
 }
 
-func (m *memoryStore) incrementAndCheck() (int64, bool) {
+func (m *memoryStore) incrementAndCheck() (bool, error) {
 	// m.Lock()
 	// defer m.Unlock()
-	if m.count < m.limit {
-		m.count++
-	}
-	return m.count, m.count <= m.limit
+	m.count++
+	return m.count <= m.limit, nil
 }

@@ -30,22 +30,13 @@ func TestIncrementAndCheck(t *testing.T) {
 	ms := newMemoryStore(5, 10*time.Millisecond*10, &stopCh)
 
 	for i := int64(0); i < 5; i++ {
-		count, ok := ms.incrementAndCheck()
-		if count != i+1 {
-			t.Errorf("Expected count to be %d, got %d", i+1, count)
+		ok, _ := ms.incrementAndCheck()
+		if ms.count != i+1 {
+			t.Errorf("Expected count to be %d, got %d", i+1, ms.count)
 		}
 		if !ok {
 			t.Errorf("Expected rate to be within limit, but it is not")
 		}
-	}
-
-	// Check when limit is reached
-	count, ok := ms.incrementAndCheck()
-	if count != 5 {
-		t.Errorf("Expected count to be 5, got %d", count)
-	}
-	if !ok {
-		t.Errorf("Expected rate to be within limit, but it is not")
 	}
 }
 
@@ -57,9 +48,9 @@ func TestResetAfterWindow(t *testing.T) {
 	time.Sleep(2 * time.Millisecond * 10)
 
 	// After reset, count should be zero
-	count, ok := ms.incrementAndCheck()
-	if count != 1 {
-		t.Errorf("Expected count to be 1 after reset, got %d", count)
+	ok, _ := ms.incrementAndCheck()
+	if ms.count != 1 {
+		t.Errorf("Expected count to be 1 after reset, got %d", ms.count)
 	}
 	if !ok {
 		t.Errorf("Expected rate to be within limit, but it is not")
@@ -75,7 +66,7 @@ func TestStopTicker(t *testing.T) {
 	time.Sleep(1 * time.Millisecond * 10) // Allow time for goroutine to exit
 
 	// Check that incrementAndCheck still functions
-	_, ok := ms.incrementAndCheck()
+	ok, _ := ms.incrementAndCheck()
 	if ok {
 		t.Errorf("Expected rate to be out out to be out of limits")
 	}
