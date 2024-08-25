@@ -77,7 +77,7 @@ go build ./...
 
 # Publish the module
 echo "Publishing module..."
-go list -m $MODULE_NAME@$next_version
+# go list -m $MODULE_NAME@$next_version
 
 # Notify the user
 echo "Module $MODULE_NAME has been published with version $next_version."
