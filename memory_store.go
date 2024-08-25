@@ -12,13 +12,13 @@ type memoryStore struct {
 	limit int64
 }
 
-func (m *memoryStore) init(limit int64, window time.Duration, stopCh *chan bool) {
+func (m *memoryStore) init(key string, limit int64, window time.Duration, config RateLimiterConfig) {
 	m.count = 0
 	m.duration = window
 	m.limit = limit
 	var stop chan bool
-	if stopCh != nil {
-		stop = *stopCh
+	if config.stopChan != nil {
+		stop = config.stopChan
 	} else {
 		stop = make(chan bool)
 	}
@@ -38,10 +38,10 @@ func (m *memoryStore) init(limit int64, window time.Duration, stopCh *chan bool)
 	}()
 }
 
-func (m *memoryStore) getStatus() (int64, bool) {
+func (m *memoryStore) getStatus() (int64, bool, error) {
 	// m.RLock()
 	// defer m.RUnlock()
-	return m.count, m.count <= m.limit
+	return m.count, m.count <= m.limit, nil
 }
 
 func (m *memoryStore) incrementAndCheck() (bool, error) {

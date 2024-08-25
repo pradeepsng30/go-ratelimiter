@@ -4,34 +4,35 @@ import "time"
 
 type RateLimiter struct {
 	RateLimiterInterface
-	config   RateLimiterConfig
-	store    Store
-	stopChan chan bool
+	config RateLimiterConfig
+	store  Store
+	// stopChan chan bool
 }
 
 func getStore(storeType StoreType) Store {
 	switch storeType {
 	case MEMORY:
 		return &memoryStore{}
+	case REDIS:
+		return &redisStore{}
 	default:
 		return &memoryStore{}
 	}
 }
 
-func (r *RateLimiter) Init(name string, limit int64, window time.Duration, storeType StoreType) {
-	r.config = RateLimiterConfig{name}
+func (r *RateLimiter) Init(name string, limit int64, window time.Duration, storeType StoreType, config RateLimiterConfig) {
+	r.config = config
 	r.store = getStore(storeType)
-	r.stopChan = make(chan bool)
-	r.store.init(limit, window, &r.stopChan)
+	r.config.stopChan = make(chan bool)
+	r.store.init(name, limit, window, r.config)
 }
 
 func (r *RateLimiter) Stop() {
-	r.stopChan <- true
+	r.config.stopChan <- true
 }
 
 func (r *RateLimiter) GetStatus() (int64, bool, error) {
-	a, b := r.store.getStatus()
-	return a, b, nil
+	return r.store.getStatus()
 }
 
 func (r *RateLimiter) Hit() (bool, error) {

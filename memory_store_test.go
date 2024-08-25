@@ -8,7 +8,9 @@ import (
 // Helper function to create a new memoryStore
 func newMemoryStore(limit int64, window time.Duration, stopCh *chan bool) *memoryStore {
 	ms := &memoryStore{}
-	ms.init(limit, window, stopCh)
+	c := RateLimiterConfig{}
+	c.stopChan = *stopCh
+	ms.init("temp", limit, window, c)
 	return ms
 }
 

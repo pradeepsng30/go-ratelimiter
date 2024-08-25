@@ -1,6 +1,11 @@
 package ratelimiter
 
-import "time"
+import (
+	"context"
+	"time"
+
+	"github.com/go-redis/redis/v8"
+)
 
 // Define a custom type for the enum
 type StoreType int
@@ -14,18 +19,20 @@ const (
 type RateLimiterInterface interface {
 	GetStatus() (int64, bool, error)
 	Hit() (bool, error)
-	Init(name string, storeType StoreType)
+	Init(name string, limit int64, window time.Duration, storeType StoreType, config RateLimiterConfig)
 	Stop()
 }
 
 type RateLimiterConfig struct {
-	name string
-	// lazyUpdateSize int64
-	// duration       time.Duration
+	// name     string
+	rdb *redis.Client
+	// duration time.Duration
+	stopChan chan bool
+	ctx      context.Context
 }
 
 type Store interface {
-	getStatus() (int64, bool)
+	getStatus() (int64, bool, error)
 	incrementAndCheck() (bool, error)
-	init(limit int64, window time.Duration, stopCh *chan bool)
+	init(key string, limit int64, window time.Duration, config RateLimiterConfig)
 }
