@@ -25,9 +25,9 @@ func (m *redisStore) init(key string, limit int64, window time.Duration, config 
 	m.duration = window
 	m.limit = limit
 	m.key = REDIS_STORE_PREFIX + key
-	m.rdb = config.rdb
-	if config.ctx != nil {
-		m.ctx = config.ctx
+	m.rdb = config.Rdb
+	if config.Ctx != nil {
+		m.ctx = config.Ctx
 	} else {
 		m.ctx = context.Background()
 	}

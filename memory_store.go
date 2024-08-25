@@ -17,8 +17,8 @@ func (m *memoryStore) init(key string, limit int64, window time.Duration, config
 	m.duration = window
 	m.limit = limit
 	var stop chan bool
-	if config.stopChan != nil {
-		stop = config.stopChan
+	if config.StopChan != nil {
+		stop = config.StopChan
 	} else {
 		stop = make(chan bool)
 	}

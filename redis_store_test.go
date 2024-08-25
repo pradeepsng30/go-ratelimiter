@@ -15,7 +15,7 @@ func TestRedisStoreInit(t *testing.T) {
 	defer rdb.Close()
 
 	redisStore := &redisStore{}
-	config := RateLimiterConfig{rdb: rdb}
+	config := RateLimiterConfig{Rdb: rdb}
 	redisStore.init("test-key", 100, time.Minute, config)
 
 	assert.Equal(t, int64(100), redisStore.limit)

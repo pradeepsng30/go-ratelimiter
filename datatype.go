@@ -25,10 +25,10 @@ type RateLimiterInterface interface {
 
 type RateLimiterConfig struct {
 	// name     string
-	rdb *redis.Client
+	Rdb *redis.Client
 	// duration time.Duration
-	stopChan chan bool
-	ctx      context.Context
+	StopChan chan bool
+	Ctx      context.Context
 }
 
 type Store interface {

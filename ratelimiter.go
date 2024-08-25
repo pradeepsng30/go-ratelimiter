@@ -23,12 +23,12 @@ func getStore(storeType StoreType) Store {
 func (r *RateLimiter) Init(name string, limit int64, window time.Duration, storeType StoreType, config RateLimiterConfig) {
 	r.config = config
 	r.store = getStore(storeType)
-	r.config.stopChan = make(chan bool)
+	r.config.StopChan = make(chan bool)
 	r.store.init(name, limit, window, r.config)
 }
 
 func (r *RateLimiter) Stop() {
-	r.config.stopChan <- true
+	r.config.StopChan <- true
 }
 
 func (r *RateLimiter) GetStatus() (int64, bool, error) {

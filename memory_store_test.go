@@ -9,7 +9,7 @@ import (
 func newMemoryStore(limit int64, window time.Duration, stopCh *chan bool) *memoryStore {
 	ms := &memoryStore{}
 	c := RateLimiterConfig{}
-	c.stopChan = *stopCh
+	c.StopChan = *stopCh
 	ms.init("temp", limit, window, c)
 	return ms
 }

@@ -38,7 +38,7 @@ func TestRateLimiter_Init(t *testing.T) {
 	}
 
 	// Check if stopChan is initialized
-	if rl.config.stopChan == nil {
+	if rl.config.StopChan == nil {
 		t.Error("Expected stopChan to be initialized, got nil")
 	}
 }
@@ -52,7 +52,7 @@ func TestRateLimiter_Stop(t *testing.T) {
 	go rl.Stop()
 
 	select {
-	case <-rl.config.stopChan:
+	case <-rl.config.StopChan:
 		// Stop channel was sent a value, which is expected
 	case <-time.After(time.Second):
 		t.Error("Expected stopChan to receive a value within 1 second")
